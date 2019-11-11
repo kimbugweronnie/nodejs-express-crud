@@ -1,94 +1,71 @@
 const express = require("express");
-var router= express.Router();
-const mongoose= require('mongoose');
-const Employee=mongoose.model('Employee');
+var router = express.Router();
+const mongoose = require("mongoose");
+const Employee = mongoose.model("employees");
 // CRUD operations
-router.get("/", (req,res)=>{
-   
-    res.render('employee/andEdit',{
-        viewTitle:"My Information"
-    });
+router.get("/", (req, res) => {
+  res.render("employee/andEdit", {
+    viewTitle: "My Information"
+  });
 });
 
-router.post('/',(req,res)=>{
-   if(req.body.id==""){
-insertdata(req,res);
-   }
-else{
-    updateRecord(req,res);
-
-}
-    
-    });
-function insertdata(req,res){
-    var employee=new Employee();
-    employee.fullName=req.body.fullName;
-    employee.email=req.body.email;
-    employee.mobile=req.body.mobile;
-    employee.city=req.body.city;
-    employee.save((err,doc)=>{
-        if(!err){
-            res.redirect('employee/list');
-        }else{
-            console.log("error" +err);
-    })
-};
-}
-router.get('/delete/:id',(req,res)=>{
-    Employee.findByAndRemove(req.params.id,(err,doc)=>{
-        if(!err){
-            res.redirect('employee/list');
-        }else{
-            console.log("error" +err);
-    })
-})
-
+router.post("/", (req, res) => {
+  insertdata(req, res);
+  // if (req.body.id == "") {
+  //   insertdata(req, res);
+  //   console.log("okay");
+  // } else {
+  //   console.log("bad");
+  // }
 });
-function updateRecord(req,res) {
-    Employee.findOneAndUpdate(
-        {id:req.body.id,
-        req.body,
-        {new:true},
-        (err,doc)=>{
-            if(!err){
-                res.redirect('employee/list');
 
-            }else{
-                console.log("the err is "+err);
-            }
-        });
-        }
+function insertdata(req, res) {
+  var employee = new Employee();
 
-
-    )
-    
-},
-router.get('/list',(req,res)=>{
-    //res.json('the list is here');
-    Employee.find(err,docs)=>{
-        if(!err){
-            res.render("employee/list",{
-                list:docs
-
-            });
-        }
-        else{
-            console.log("error" +err);
-        }
-            
-
-    });
-router.get('/:id',(req,res)=>{
-    Employee.findById(req.params.id,(err,doc)=>{
-        if(!err){
-            res.render("employee/addEdit",{
-                viewTitle:"Update Employee",
-                employee:doc
-            });
-
-        }
+  employee.fullName = req.body.fullName;
+  employee.email = req.body.email;
+  employee.mobile = req.body.mobile;
+  employee.city = req.body.city;
+  employee.save((err, doc) => {
+    if (!err) {
+      res.redirect("employee/list");
+    } else {
+      if (err.name == "ValidationError") handleValidationError(err, req.body);
+      res.render("employee/andEdit", {
+        viewTitle: "My Information",
+        employee: req.body
+      });
+      //console.log("error" + err);
     }
+  });
 }
+router.get("/list", (req, res) => {
+  // res.json("fromlist");
+  Employee.find((err, docs) => {
+    if (!err) {
+      res.render("employee/list", {
+        list: docs
+      });
+      console.log(Employee);
+    } else {
+      console.log("Error" + err);
+    }
+  });
 });
+
+function handleValidationError(err, body) {
+  for (field in err.errors) {
+    switch (err.errors[field].path) {
+      case "fullName":
+        body["fullNameError"] = err.errors[field].message;
+        break;
+      case "email":
+        body["emailError"] = err.errors[field].message;
+        break;
+      default:
+        break;
+    }
+  }
+}
 //exporting the router object
- module.exports=router;
+module.exports = router;
