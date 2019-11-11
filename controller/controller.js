@@ -11,12 +11,6 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
   insertdata(req, res);
-  // if (req.body.id == "") {
-  //   insertdata(req, res);
-  //   console.log("okay");
-  // } else {
-  //   console.log("bad");
-  // }
 });
 
 function insertdata(req, res) {
