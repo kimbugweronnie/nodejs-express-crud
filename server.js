@@ -30,6 +30,6 @@ app.engine(
 // setting express hbs as view engine
 app.set("view engine", "hbs");
 //listen to port 3000
-app.listen(6500, () => {
-  console.log("express on port 6500");
+app.listen(7500, () => {
+  console.log("express on port 7500");
 });
