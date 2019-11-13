@@ -17,9 +17,9 @@
             <td>{{this.mobile}}</td>
             <td>{{this.city}}</td>
             <td>
-                <a><i class="fa fa-pencil fa-lg" aria-hidden="true"></i></a>
-                <a><i class="fa fa-trash fa-lg" aria-hidden="true"></i></a>
-                <i class="rounded-circle fas fa-pen" aria-hidden="true" @click="modal = true"></i>
+                <a href="/employee/{{this._id}}">EDIT</a>
+                <a href="/employee/delete/{{this._id}}"><b>DELETE</b></a>
+                {{!-- <i class="rounded-circle fas fa-pen" aria-hidden="true" @click="modal = true"></i> --}}
             </td>
 
         </tr>
